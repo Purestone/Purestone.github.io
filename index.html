@@ -5,47 +5,296 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Flowing East</title>
   <style>
-    * { margin: 0; padding: 0; }
-    body { background: #fff; overflow: hidden; height: 100vh; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #fff;
+      color: #2b2b2b;
+      font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+      min-height: 100vh;
+      min-height: 100svh;
+      overflow: hidden;
+    }
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      min-height: 100svh;
+      overflow: hidden;
+    }
     .title {
       position: absolute;
       top: 38.2%;
       left: 50%;
       transform: translate(-50%, -50%);
-      font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
       font-weight: 300;
       font-size: clamp(28px, 5.5vw, 56px);
       color: rgba(150,150,150,0.85);
       letter-spacing: 0.05em;
+      white-space: nowrap;
     }
     svg { position: absolute; top: 61.8%; left: 0; width: 100vw; height: 10vh; overflow: visible; transform: translateY(-50%); }
     svg path {
       fill: none;
       stroke-linecap: round;
     }
+    .timeline {
+      position: absolute;
+      left: 50%;
+      bottom: clamp(18px, 5vh, 46px);
+      width: min(1080px, calc(100vw - 40px));
+      transform: translateX(-50%);
+      color: rgba(90,90,90,0.82);
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      font-size: clamp(10px, 1.1vw, 13px);
+      line-height: 1.32;
+    }
+    .timeline-row {
+      display: grid;
+      grid-template-columns: 92px 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+    .timeline-name {
+      color: rgba(95,95,95,0.74);
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      padding-top: 19px;
+    }
+    .timeline-row + .timeline-row {
+      margin-top: 10px;
+    }
+    .timeline-label {
+      color: rgba(110,110,110,0.62);
+      font-size: 0.92em;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      padding-top: 19px;
+      text-transform: uppercase;
+    }
+    .timeline-track {
+      position: relative;
+    }
+    .timeline-flow {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 16px;
+      overflow: visible;
+      pointer-events: none;
+      transform: translateY(-1px);
+    }
+    .timeline-flow path {
+      fill: none;
+      stroke-linecap: round;
+    }
+    .timeline-list {
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: clamp(12px, 2vw, 26px);
+      list-style: none;
+    }
+    .timeline-row:nth-child(3) .timeline-list {
+      grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr);
+    }
+    .timeline-item {
+      position: relative;
+      padding-top: 20px;
+      min-width: 0;
+    }
+    .timeline-item::before {
+      content: "";
+      position: absolute;
+      top: 2px;
+      left: 0;
+      width: 9px;
+      height: 9px;
+      border: 1px solid rgba(120,120,120,0.58);
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 0 0 4px rgba(255,255,255,0.72);
+    }
+    .timeline-item:nth-child(2) {
+      transform: translateY(5px);
+    }
+    .timeline-date {
+      color: rgba(110,110,110,0.76);
+      margin-bottom: 4px;
+      white-space: nowrap;
+    }
+    .timeline-title {
+      color: rgba(55,55,55,0.85);
+      font-weight: 600;
+    }
+    .timeline-place,
+    .timeline-type {
+      color: rgba(105,105,105,0.75);
+      margin-top: 3px;
+    }
+    .timeline-title,
+    .timeline-place,
+    .timeline-type {
+      overflow-wrap: anywhere;
+    }
+    @media (max-width: 760px) {
+      .title {
+        top: 30%;
+      }
+      svg {
+        top: 48%;
+      }
+      .timeline {
+        bottom: 14px;
+        width: min(520px, calc(100vw - 28px));
+        font-size: 10px;
+      }
+      .timeline-row {
+        display: block;
+      }
+      .timeline-name {
+        padding: 0 0 8px 24px;
+      }
+      .timeline-row + .timeline-row {
+        margin-top: 8px;
+      }
+      .timeline-label {
+        padding: 0 0 5px 24px;
+      }
+      .timeline-flow {
+        display: none;
+      }
+      .timeline-list {
+        display: block;
+      }
+      .timeline-list::before {
+        content: "";
+        position: absolute;
+        top: 1px;
+        left: 4px;
+        height: 100%;
+        width: 0;
+        border-top: 0;
+        border-left: 1px solid rgba(160,160,160,0.38);
+      }
+      .timeline-row:nth-child(3) .timeline-list {
+        display: block;
+      }
+      .timeline-item:nth-child(2) {
+        transform: none;
+      }
+      .timeline-item {
+        padding: 0 0 9px 24px;
+      }
+      .timeline-item:last-child {
+        padding-bottom: 0;
+      }
+      .timeline-item::before {
+        top: 1px;
+        left: 0;
+      }
+      .timeline-date {
+        margin-bottom: 2px;
+      }
+    }
   </style>
 </head>
 <body>
-<div class="title">人生长恨水长东</div>
-<svg id="waves" viewBox="0 0 1000 100" preserveAspectRatio="none">
-  <path id="w0" stroke="rgba(200,200,200,0.5)" stroke-width="2"/>
-  <path id="w1" stroke="rgba(180,180,180,0.45)" stroke-width="1.6"/>
-  <path id="w2" stroke="rgba(160,160,160,0.4)" stroke-width="1.2"/>
-</svg>
+<main>
+  <section class="hero" aria-label="Home">
+    <div class="title">人生长恨水长东</div>
+    <svg id="waves" viewBox="0 0 1000 100" preserveAspectRatio="none" aria-hidden="true">
+      <path id="w0" stroke="rgba(200,200,200,0.5)" stroke-width="2"/>
+      <path id="w1" stroke="rgba(180,180,180,0.45)" stroke-width="1.6"/>
+      <path id="w2" stroke="rgba(160,160,160,0.4)" stroke-width="1.2"/>
+    </svg>
+
+    <section class="timeline" aria-label="Curriculum vitae timeline">
+      <div class="timeline-row">
+        <div class="timeline-name">Wufan Sun</div>
+      </div>
+      <div class="timeline-row">
+        <div class="timeline-label">Education</div>
+        <div class="timeline-track">
+          <svg class="timeline-flow" viewBox="0 0 1000 18" preserveAspectRatio="none" aria-hidden="true">
+            <defs>
+              <linearGradient id="educationFlow" x1="0" x2="1" y1="0" y2="0">
+                <stop offset="0%" stop-color="rgba(190,190,190,0.14)"/>
+                <stop offset="68%" stop-color="rgba(150,150,150,0.42)"/>
+                <stop offset="100%" stop-color="rgba(120,120,120,0.2)"/>
+              </linearGradient>
+            </defs>
+            <path d="M0,8 C150,3 250,14 390,8 S650,3 790,8 930,14 1000,8" stroke="url(#educationFlow)" stroke-width="1.2"/>
+            <path d="M0,11 C180,16 310,5 470,11 S720,16 1000,9" stroke="rgba(185,185,185,0.16)" stroke-width="0.8"/>
+          </svg>
+          <ol class="timeline-list">
+            <li class="timeline-item">
+              <div class="timeline-date">Sep 2018 - June 2022</div>
+              <div class="timeline-title">Bachelor of Engineering</div>
+              <div class="timeline-place">Soochow University</div>
+            </li>
+            <li class="timeline-item">
+              <div class="timeline-date">Feb 2025 - Jan 2027</div>
+              <div class="timeline-title">Master of Computer Science</div>
+              <div class="timeline-place">The University of Sydney</div>
+            </li>
+          </ol>
+        </div>
+      </div>
+      <div class="timeline-row">
+        <div class="timeline-label">Experience</div>
+        <div class="timeline-track">
+          <svg class="timeline-flow" viewBox="0 0 1000 18" preserveAspectRatio="none" aria-hidden="true">
+            <defs>
+              <linearGradient id="experienceFlow" x1="0" x2="1" y1="0" y2="0">
+                <stop offset="0%" stop-color="rgba(190,190,190,0.12)"/>
+                <stop offset="72%" stop-color="rgba(150,150,150,0.4)"/>
+                <stop offset="100%" stop-color="rgba(120,120,120,0.2)"/>
+              </linearGradient>
+            </defs>
+            <path d="M0,9 C120,14 250,4 390,9 S610,15 760,8 910,4 1000,9" stroke="url(#experienceFlow)" stroke-width="1.2"/>
+            <path d="M0,6 C170,2 315,13 480,7 S750,2 1000,10" stroke="rgba(185,185,185,0.15)" stroke-width="0.8"/>
+          </svg>
+          <ol class="timeline-list">
+            <li class="timeline-item">
+              <div class="timeline-date">Dec 2021 - May 2022</div>
+              <div class="timeline-title">Preparation of fluorite tailing/blast furnace dust supported nanoscale zero-valent iron and its performance in degradation</div>
+              <div class="timeline-type">Undergraduate Research</div>
+              <div class="timeline-place">Soochow University</div>
+            </li>
+            <li class="timeline-item">
+              <div class="timeline-date">Feb 2026</div>
+              <div class="timeline-title">Engineering Vacation Research Internship Scholarship</div>
+              <div class="timeline-place">Faculty of Engineering, The University of Sydney</div>
+            </li>
+          </ol>
+        </div>
+      </div>
+    </section>
+  </section>
+</main>
 <script>
 const titleEl = document.querySelector('.title');
+const timelineEl = document.querySelector('.timeline');
+let seed = Date.now() % 2147483647;
+if (seed <= 0) seed += 2147483646;
+
+function seededRandom() {
+  seed = seed * 16807 % 2147483647;
+  return (seed - 1) / 2147483646;
+}
+
 const paths = [
-  { el: document.getElementById('w0'), y: 55, amp: 18, freq: 0.012, speed: 1.0 },
-  { el: document.getElementById('w1'), y: 70, amp: 14, freq: 0.015, speed: 1.3 },
-  { el: document.getElementById('w2'), y: 85, amp: 11, freq: 0.018, speed: 1.6 },
+  { el: document.getElementById('w0'), y: 55, amp: 18, freq: 0.012, speed: 1.0, phaseA: seededRandom() * Math.PI * 2, phaseB: seededRandom() * Math.PI * 2 },
+  { el: document.getElementById('w1'), y: 70, amp: 14, freq: 0.015, speed: 1.3, phaseA: seededRandom() * Math.PI * 2, phaseB: seededRandom() * Math.PI * 2 },
+  { el: document.getElementById('w2'), y: 85, amp: 11, freq: 0.018, speed: 1.6, phaseA: seededRandom() * Math.PI * 2, phaseB: seededRandom() * Math.PI * 2 },
 ];
 
-let t = 0;
+let t = seededRandom() * 120;
 
 function waveY(p, x) {
   return p.y
-    + Math.sin(x * p.freq - t * p.speed * 2) * p.amp
-    + Math.sin(x * p.freq * 0.5 - t * p.speed * 1.2 + 1) * p.amp * 0.4;
+    + Math.sin(x * p.freq - t * p.speed * 2 + p.phaseA) * p.amp
+    + Math.sin(x * p.freq * 0.5 - t * p.speed * 1.2 + p.phaseB) * p.amp * 0.4;
 }
 
 function draw() {
@@ -58,6 +307,7 @@ function draw() {
   // Map avgY (range ~45-95) to opacity (0.85 ↔ 0.15)
   const opacity = 0.15 + (1 - (avgY - 45) / 50) * 0.7;
   titleEl.style.opacity = Math.max(0.2, Math.min(0.85, opacity));
+  timelineEl.style.opacity = Math.max(0.24, Math.min(0.82, opacity * 0.9));
 
   for (const p of paths) {
     let d = '';
